@@ -131,7 +131,7 @@ void main() {
         ),
       );
       expect(find.bySemanticsLabel('Send'), findsOneWidget);
-      await tester.semantics.tap(find.bySemanticsLabel('Send'));
+      tester.semantics.tap(find.semantics.byLabel('Send'));
       await tester.pump();
       expect(taps, 1);
       handle.dispose();
