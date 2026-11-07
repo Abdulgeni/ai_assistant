@@ -1,0 +1,55 @@
+name: ai_assistant
+description: Production-grade AI assistant with token streaming, voice, Arabic RTL, and server-side RAG.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  # Floor comes from drift_dev's Dart requirement (>=3.10.0).
+  sdk: ^3.10.0
+
+dependencies:
+  audio_session: ">=0.1.25 <0.3.0"
+  dio: ^5.7.0
+  drift: ^2.35.0
+  drift_flutter: ^0.3.0
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  # Pinned to 2.6.x by project decision (analyzer-plugin migration pending).
+  flutter_riverpod: ">=2.6.1 <2.7.0"
+  flutter_secure_storage: ">=9.2.2 <11.0.0"
+  flutter_tts: ">=4.2.0 <5.0.0"
+  # Version is dictated by flutter_localizations; Flutter docs recommend `any`.
+  intl: any
+  path: ^1.9.0
+  path_provider: ^2.1.4
+  permission_handler: ">=11.3.1 <13.0.0"
+  # Verified to exist. Do NOT use the blueprint's 7.6.0-beta / iosVoiceProcessing.
+  speech_to_text: ">=7.3.0 <7.6.0"
+  uuid: ^4.5.1
+
+dev_dependencies:
+  build_runner: ^2.4.13
+  drift_dev: ^2.33.0
+  flutter_lints: ">=5.0.0 <7.0.0"
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  generate: true # enables gen_l10n via l10n.yaml
+  assets:
+    - assets/fonts/OFL.txt
+  fonts:
+    - family: IBMPlexSansArabic
+      fonts:
+        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexSansArabic-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
+          weight: 700

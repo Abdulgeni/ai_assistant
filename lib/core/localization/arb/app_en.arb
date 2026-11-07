@@ -1,0 +1,5 @@
+{
+  "@@locale": "en",
+  "appTitle": "AI Assistant",
+  "@appTitle": { "description": "Application title shown in the app bar." }
+}
