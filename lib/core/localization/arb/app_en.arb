@@ -1,5 +1,60 @@
 {
   "@@locale": "en",
+
   "appTitle": "AI Assistant",
-  "@appTitle": { "description": "Application title shown in the app bar." }
+  "newChat": "New chat",
+  "conversations": "Conversations",
+  "composerHint": "Message the assistant",
+  "send": "Send",
+  "stopGenerating": "Stop generating",
+  "startVoice": "Start voice conversation",
+
+  "emptyTitle": "How can I help today?",
+  "emptySubtitle": "Ask a question, or tap the microphone to talk.",
+  "suggestionSummarize": "Summarize a long article",
+  "suggestionEmail": "Help me write a polite email",
+  "suggestionExplain": "Explain a concept simply",
+
+  "copy": "Copy",
+  "copied": "Copied",
+  "regenerate": "Regenerate",
+  "share": "Share",
+  "retry": "Retry",
+  "jumpToLatest": "Jump to latest",
+  "thinking": "Thinking…",
+  "loading": "Loading",
+
+  "sourcesCount": "{count, plural, =0{No sources} =1{1 source} other{{count} sources}}",
+  "@sourcesCount": {
+    "description": "Number of sources cited under an assistant answer.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "errorUnauthorized": "Your session has expired. Please sign in again.",
+  "errorRateLimited": "Too many requests. Please try again in a moment.",
+  "errorNetwork": "Cannot reach the server. Check your connection.",
+  "errorTimeout": "The response took too long.",
+  "errorServer": "Something went wrong on our side.",
+  "errorMalformed": "We received an unexpected response.",
+  "errorUnknown": "Something went wrong.",
+  "errorVoiceGeneric": "Voice is not working right now. Please try again.",
+
+  "voiceListening": "Listening…",
+  "voiceSpeaking": "Speaking…",
+  "voiceInterrupted": "Interrupted",
+  "voiceTapToInterrupt": "Tap to interrupt",
+  "voiceEnd": "End conversation",
+  "voiceLanguageUnavailable": "Arabic voice is not available on this device.",
+
+  "micPermissionTitle": "Microphone access needed",
+  "micPermissionBody": "Allow microphone access to talk with the assistant.",
+  "openSettings": "Open settings",
+  "allowAccess": "Allow access",
+
+  "switchLanguage": "Switch language",
+  "switchTheme": "Switch theme"
 }

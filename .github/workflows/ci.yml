@@ -47,7 +47,7 @@ jobs:
       - name: Generate l10n
         if: ${{ hashFiles('lib/core/localization/arb/app_en.arb') != '' }}
         run: flutter gen-l10n
-      - run: flutter analyze --no-fatal-infos
+      - run: flutter analyze
       - name: Test
         if: ${{ hashFiles('test/**/*_test.dart') != '' }}
         run: flutter test

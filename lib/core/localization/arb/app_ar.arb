@@ -1,5 +1,52 @@
 {
   "@@locale": "ar",
+
   "appTitle": "المساعد الذكي",
-  "@appTitle": { "description": "Application title shown in the app bar." }
+  "newChat": "محادثة جديدة",
+  "conversations": "المحادثات",
+  "composerHint": "اكتب رسالتك للمساعد",
+  "send": "إرسال",
+  "stopGenerating": "إيقاف التوليد",
+  "startVoice": "بدء محادثة صوتية",
+
+  "emptyTitle": "كيف يمكنني مساعدتك اليوم؟",
+  "emptySubtitle": "اطرح سؤالًا، أو اضغط على الميكروفون للتحدث.",
+  "suggestionSummarize": "لخّص لي مقالًا طويلًا",
+  "suggestionEmail": "ساعدني في كتابة رسالة بريد مهذبة",
+  "suggestionExplain": "اشرح لي مفهومًا بكلمات بسيطة",
+
+  "copy": "نسخ",
+  "copied": "تم النسخ",
+  "regenerate": "إعادة التوليد",
+  "share": "مشاركة",
+  "retry": "إعادة المحاولة",
+  "jumpToLatest": "الانتقال إلى الأحدث",
+  "thinking": "جارٍ التفكير…",
+  "loading": "جارٍ التحميل",
+
+  "sourcesCount": "{count, plural, =0{لا توجد مصادر} =1{مصدر واحد} =2{مصدران} few{{count} مصادر} many{{count} مصدرًا} other{{count} مصدر}}",
+
+  "errorUnauthorized": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
+  "errorRateLimited": "عدد الطلبات كبير جدًا. حاول مرة أخرى بعد قليل.",
+  "errorNetwork": "تعذّر الوصول إلى الخادم. تحقق من اتصالك بالإنترنت.",
+  "errorTimeout": "استغرق الرد وقتًا أطول من المتوقع.",
+  "errorServer": "حدث خطأ من جانبنا.",
+  "errorMalformed": "تلقّينا استجابة غير متوقعة.",
+  "errorUnknown": "حدث خطأ ما.",
+  "errorVoiceGeneric": "الميزة الصوتية لا تعمل حاليًا. حاول مرة أخرى.",
+
+  "voiceListening": "أستمع إليك…",
+  "voiceSpeaking": "أتحدث…",
+  "voiceInterrupted": "تمت المقاطعة",
+  "voiceTapToInterrupt": "اضغط للمقاطعة",
+  "voiceEnd": "إنهاء المحادثة",
+  "voiceLanguageUnavailable": "الصوت العربي غير متاح على هذا الجهاز.",
+
+  "micPermissionTitle": "الوصول إلى الميكروفون مطلوب",
+  "micPermissionBody": "اسمح بالوصول إلى الميكروفون للتحدث مع المساعد.",
+  "openSettings": "فتح الإعدادات",
+  "allowAccess": "السماح بالوصول",
+
+  "switchLanguage": "تغيير اللغة",
+  "switchTheme": "تغيير المظهر"
 }
