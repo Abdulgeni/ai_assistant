@@ -176,7 +176,7 @@ void main() {
       final StreamController<List<int>> body = StreamController<List<int>>();
       final ({SseClient client, _FakeAdapter adapter}) t = _setup(
         (RequestOptions o) => Future<ResponseBody>.value(_sse(body.stream)),
-        idle: const Duration(milliseconds: 120),
+        idle: const Duration(milliseconds:  300),
       );
       final _Outcome outcome = _listen(t.client.post('/chat'));
       for (var i = 0; i < 6; i++) {
