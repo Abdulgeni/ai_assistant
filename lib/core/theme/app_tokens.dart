@@ -178,4 +178,10 @@ abstract final class AppChat {
 
   static const double skeletonUserWidthFraction = 0.5;
   static const double skeletonAssistantWidthFraction = 0.8;
+
+  static const double quoteBarWidth = 3;
+  static const double sheetMaxHeightFraction = 0.6;
+
+  /// How long a "copied" confirmation stays visible (feedback, not motion).
+  static const Duration copiedFeedback = Duration(seconds: 2);
 }

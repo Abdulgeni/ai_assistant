@@ -15,6 +15,7 @@ analyzer:
     - android/**
     - ios/**
   errors:
+    sort_pub_dependencies: ignore
     missing_required_param: error
     missing_return: error
     todo: ignore

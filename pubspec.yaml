@@ -16,17 +16,21 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_markdown_plus: ^1.0.7
   # Pinned to 2.6.x by project decision (analyzer-plugin migration pending).
   flutter_riverpod: ">=2.6.1 <2.7.0"
   flutter_secure_storage: ">=9.2.2 <11.0.0"
   flutter_tts: ">=4.2.0 <5.0.0"
   # Version is dictated by flutter_localizations; Flutter docs recommend `any`.
   intl: any
+  markdown: any
   path: ^1.9.0
   path_provider: ^2.1.4
   permission_handler: ">=11.3.1 <13.0.0"
+  share_plus: ^13.3.1
   # Verified to exist. Do NOT use the blueprint's 7.6.0-beta / iosVoiceProcessing.
   speech_to_text: ">=7.3.0 <7.6.0"
+  url_launcher: ">=6.3.0 <7.0.0"
   uuid: ^4.5.1
 
 dev_dependencies:

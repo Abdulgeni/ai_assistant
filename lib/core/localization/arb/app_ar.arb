@@ -58,5 +58,11 @@
   "storageWarning": "تعذّر حفظ هذه المحادثة على جهازك.",
   "notConfigured": "التطبيق غير متصل بالخادم بعد.",
   "conversationLoadFailed": "تعذّر فتح محادثاتك.",
-  "historyLoadFailed": "تعذّر تحميل هذه المحادثة."
+  "historyLoadFailed": "تعذّر تحميل هذه المحادثة.",
+
+  "openLinkTitle": "فتح هذا الرابط؟",
+  "openLinkBody": "سيُفتح خارج التطبيق.",
+  "open": "فتح",
+  "cancel": "إلغاء",
+  "copyCode": "نسخ الشيفرة"
 }

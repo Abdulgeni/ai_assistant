@@ -66,5 +66,11 @@
   "storageWarning": "This chat could not be saved on your device.",
   "notConfigured": "The app is not connected to a server yet.",
   "conversationLoadFailed": "Could not open your chats.",
-  "historyLoadFailed": "Could not load this chat."
+  "historyLoadFailed": "Could not load this chat.",
+
+  "openLinkTitle": "Open this link?",
+  "openLinkBody": "It will open outside the app.",
+  "open": "Open",
+  "cancel": "Cancel",
+  "copyCode": "Copy code"
 }

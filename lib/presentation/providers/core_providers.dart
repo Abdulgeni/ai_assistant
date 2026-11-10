@@ -1,4 +1,5 @@
 import 'package:ai_assistant/core/config/app_config.dart';
+import 'package:ai_assistant/core/platform/platform_actions.dart';
 import 'package:ai_assistant/domain/chat_repository.dart';
 import 'package:ai_assistant/domain/llm_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,3 +75,8 @@ final class GenerationLock {
     if (_holder == owner) _holder = null;
   }
 }
+
+/// Clipboard, share sheet, and external links. Tests override it with a fake.
+final platformActionsProvider = Provider<PlatformActions>(
+  (ref) => const DefaultPlatformActions(),
+);
