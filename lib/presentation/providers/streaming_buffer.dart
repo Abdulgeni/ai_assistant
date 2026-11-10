@@ -28,7 +28,7 @@ final class StreamingBufferState extends ValueObject {
 /// How often the buffer may publish a new snapshot while tokens stream in.
 /// Keep within 30 to 60 ms; tests override this.
 final streamingFlushIntervalProvider = Provider<Duration>(
-  (ref) => const Duration(milliseconds: 40),
+  (ref) => const Duration(milliseconds: 60),
 );
 
 /// Holds the text of the single in-flight assistant message so that only the

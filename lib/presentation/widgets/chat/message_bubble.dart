@@ -7,13 +7,13 @@ import 'package:ai_assistant/domain/entities/chat_message.dart';
 import 'package:ai_assistant/domain/entities/stream_event.dart';
 import 'package:ai_assistant/presentation/l10n/failure_messages.dart';
 import 'package:ai_assistant/presentation/providers/streaming_buffer.dart';
+import 'package:ai_assistant/presentation/widgets/chat/markdown_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// One chat message. The user's bubble has a gradient and its tail at the
 /// bottom END corner; the assistant's has a surface fill and its tail at the
-/// bottom START corner. Both mirror automatically in RTL, and the text inside
-/// takes its own direction from its first strong character.
+/// bottom START corner. Both mirror automatically in RTL.
 ///
 /// For the message currently streaming, only [_StreamingBody] rebuilds per
 /// token (it watches the streaming buffer); this widget does not.
@@ -23,6 +23,8 @@ class MessageBubble extends StatelessWidget {
     super.key,
     this.failure,
     this.onRetry,
+    this.onLongPress,
+    this.onOpenSources,
   });
 
   final ChatMessage message;
@@ -32,6 +34,13 @@ class MessageBubble extends StatelessWidget {
 
   /// Shown on a failed message when a retry is possible.
   final VoidCallback? onRetry;
+
+  /// Opens the message actions. Also exposed to assistive technology as the
+  /// long-press action.
+  final VoidCallback? onLongPress;
+
+  /// Opens the citations list.
+  final VoidCallback? onOpenSources;
 
   @override
   Widget build(BuildContext context) {
@@ -63,22 +72,28 @@ class MessageBubble extends StatelessWidget {
               child: Semantics(
                 container: true,
                 label: isUser ? l10n.roleUser : l10n.roleAssistant,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: isUser ? palette.userBubbleGradient : null,
-                    color: isUser ? null : palette.assistantBubble,
-                    borderRadius: radius,
-                    border: isUser ? null : Border.all(color: palette.outline),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: isUser
-                        ? _UserContent(text: message.content)
-                        : _AssistantContent(
-                            message: message,
-                            failure: failure,
-                            onRetry: onRetry,
-                          ),
+                onLongPress: onLongPress,
+                child: GestureDetector(
+                  onLongPress: onLongPress,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: isUser ? palette.userBubbleGradient : null,
+                      color: isUser ? null : palette.assistantBubble,
+                      borderRadius: radius,
+                      border:
+                          isUser ? null : Border.all(color: palette.outline),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: isUser
+                          ? _UserContent(text: message.content)
+                          : _AssistantContent(
+                              message: message,
+                              failure: failure,
+                              onRetry: onRetry,
+                              onOpenSources: onOpenSources,
+                            ),
+                    ),
                   ),
                 ),
               ),
@@ -117,33 +132,33 @@ class _AssistantContent extends StatelessWidget {
     required this.message,
     required this.failure,
     required this.onRetry,
+    required this.onOpenSources,
   });
 
   final ChatMessage message;
   final StreamFailure? failure;
   final VoidCallback? onRetry;
+  final VoidCallback? onOpenSources;
 
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
     final AppLocalizations l10n = context.l10n;
     final TextTheme text = Theme.of(context).textTheme;
-    final TextStyle bodyStyle =
-        (text.bodyLarge ?? const TextStyle()).copyWith(color: palette.onAssistantBubble);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         if (message.status == MessageStatus.streaming)
-          _StreamingBody(messageId: message.id, style: bodyStyle)
+          _StreamingBody(
+            messageId: message.id,
+            color: palette.onAssistantBubble,
+          )
         else if (message.content.isNotEmpty)
-          Directionality(
-            textDirection: textDirectionFor(
-              message.content,
-              fallback: Directionality.of(context),
-            ),
-            child: Text(message.content, style: bodyStyle),
+          MarkdownContent(
+            text: message.content,
+            color: palette.onAssistantBubble,
           ),
         if (message.status == MessageStatus.cancelled)
           Padding(
@@ -156,11 +171,26 @@ class _AssistantContent extends StatelessWidget {
         if (message.status == MessageStatus.failed)
           _FailureRow(failure: failure, onRetry: onRetry),
         if (message.sources.isNotEmpty)
-          Padding(
-            padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-            child: Text(
-              l10n.sourcesCount(message.sources.length),
-              style: text.labelMedium?.copyWith(color: palette.textTertiary),
+          Pressable(
+            semanticLabel: l10n.sourcesCount(message.sources.length),
+            onPressed: onOpenSources,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(
+                    Icons.link_rounded,
+                    size: AppSizes.iconSm,
+                    color: palette.accent,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    l10n.sourcesCount(message.sources.length),
+                    style: text.labelMedium?.copyWith(color: palette.accent),
+                  ),
+                ],
+              ),
             ),
           ),
       ],
@@ -168,32 +198,28 @@ class _AssistantContent extends StatelessWidget {
   }
 }
 
-/// The live text of the streaming message, plus a blinking caret. Shows the
-/// thinking indicator until the first token arrives.
+/// The live text of the streaming message as Markdown, with a caret below it.
+/// Shows the thinking indicator until the first token arrives.
 class _StreamingBody extends ConsumerWidget {
-  const _StreamingBody({required this.messageId, required this.style});
+  const _StreamingBody({required this.messageId, required this.color});
 
   final String messageId;
-  final TextStyle style;
+  final Color color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final String live = ref.watch(streamingTextProvider(messageId)) ?? '';
     if (live.isEmpty) return const ThinkingIndicator();
-    return Directionality(
-      textDirection: textDirectionFor(live, fallback: Directionality.of(context)),
-      child: Text.rich(
-        TextSpan(
-          children: <InlineSpan>[
-            TextSpan(text: live),
-            const WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: StreamingCaret(),
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        MarkdownContent(text: live, color: color),
+        const Padding(
+          padding: EdgeInsetsDirectional.only(top: AppSpacing.xs),
+          child: StreamingCaret(),
         ),
-        style: style,
-      ),
+      ],
     );
   }
 }
@@ -257,8 +283,7 @@ class _FailureRow extends StatelessWidget {
   }
 }
 
-/// Blinking caret shown at the end of streaming text. Static under
-/// reduce-motion.
+/// Blinking caret shown after streaming text. Static under reduce-motion.
 class StreamingCaret extends StatefulWidget {
   const StreamingCaret({super.key});
 
@@ -301,13 +326,10 @@ class _StreamingCaretState extends State<StreamingCaret>
           opacity: _animate ? 0.2 + 0.8 * _controller.value : 1,
           child: child,
         ),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(start: AppSpacing.xxs),
-          child: SizedBox(
-            width: AppChat.caretWidth,
-            height: AppChat.caretHeight,
-            child: DecoratedBox(decoration: BoxDecoration(color: palette.accent)),
-          ),
+        child: SizedBox(
+          width: AppChat.caretWidth,
+          height: AppChat.caretHeight,
+          child: DecoratedBox(decoration: BoxDecoration(color: palette.accent)),
         ),
       ),
     );

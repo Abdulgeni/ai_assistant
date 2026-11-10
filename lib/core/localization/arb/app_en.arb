@@ -72,5 +72,11 @@
   "openLinkBody": "It will open outside the app.",
   "open": "Open",
   "cancel": "Cancel",
-  "copyCode": "Copy code"
+  "copyCode": "Copy code",
+
+  "responseReady": "Response ready",
+  "sourcesTitle": "Sources",
+  "deleteChatTitle": "Delete this chat?",
+  "deleteChatBody": "Its messages will be removed from this device.",
+  "delete": "Delete"
 }

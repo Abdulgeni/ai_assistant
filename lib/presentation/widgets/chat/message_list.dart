@@ -10,7 +10,9 @@ import 'package:ai_assistant/presentation/providers/chat_notifier.dart';
 import 'package:ai_assistant/presentation/providers/chat_state.dart';
 import 'package:ai_assistant/presentation/providers/core_providers.dart';
 import 'package:ai_assistant/presentation/widgets/chat/empty_state.dart';
+import 'package:ai_assistant/presentation/widgets/chat/message_actions.dart';
 import 'package:ai_assistant/presentation/widgets/chat/message_bubble.dart';
+import 'package:ai_assistant/presentation/widgets/chat/sources_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -87,6 +89,34 @@ class _MessageListState extends ConsumerState<MessageList> {
     return false;
   }
 
+  void _showActions(
+    BuildContext itemContext,
+    ChatMessage message, {
+    required bool canRegenerate,
+  }) {
+    unawaited(
+      showMessageActions(
+        context: itemContext,
+        actions: ref.read(platformActionsProvider),
+        message: message,
+        canRegenerate: canRegenerate,
+        onRegenerate: () {
+          _notifier.regenerate();
+        },
+      ),
+    );
+  }
+
+  void _showSources(BuildContext itemContext, ChatMessage message) {
+    unawaited(
+      showSourcesSheet(
+        context: itemContext,
+        actions: ref.read(platformActionsProvider),
+        sources: message.sources,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final String id = widget.conversationId;
@@ -142,10 +172,15 @@ class _MessageListState extends ConsumerState<MessageList> {
               if (index >= messages.length) return const _OlderLoader();
               final ChatMessage message = messages[messages.length - 1 - index];
               final bool isNewest = index == 0;
+              final bool isStreaming = message.status == MessageStatus.streaming;
               final bool canRetry = isNewest &&
                   !chat.isStreaming &&
                   message.role == ChatRole.assistant &&
                   message.status == MessageStatus.failed;
+              final bool canRegenerate = isNewest &&
+                  !chat.isStreaming &&
+                  message.role == ChatRole.assistant &&
+                  !isStreaming;
               final bool animate = !_entranceDone.contains(message.id) &&
                   !message.createdAt.isBefore(_sessionStart);
               return KeyedSubtree(
@@ -153,14 +188,26 @@ class _MessageListState extends ConsumerState<MessageList> {
                 child: _Entrance(
                   animate: animate,
                   onDone: () => _entranceDone.add(message.id),
-                  child: MessageBubble(
-                    message: message,
-                    failure: isNewest ? chat.failure : null,
-                    onRetry: canRetry
-                        ? () {
-                            _notifier.regenerate();
-                          }
-                        : null,
+                  child: Builder(
+                    builder: (BuildContext itemContext) => MessageBubble(
+                      message: message,
+                      failure: isNewest ? chat.failure : null,
+                      onRetry: canRetry
+                          ? () {
+                              _notifier.regenerate();
+                            }
+                          : null,
+                      onLongPress: isStreaming
+                          ? null
+                          : () => _showActions(
+                                itemContext,
+                                message,
+                                canRegenerate: canRegenerate,
+                              ),
+                      onOpenSources: message.sources.isEmpty
+                          ? null
+                          : () => _showSources(itemContext, message),
+                    ),
                   ),
                 ),
               );

@@ -6,6 +6,7 @@ import 'package:ai_assistant/core/theme/app_tokens.dart';
 import 'package:ai_assistant/core/theme/widgets/app_background.dart';
 import 'package:ai_assistant/core/theme/widgets/pressable.dart';
 import 'package:ai_assistant/domain/entities/chat_message.dart';
+import 'package:ai_assistant/presentation/a11y/chat_announcements.dart';
 import 'package:ai_assistant/presentation/providers/app_settings_providers.dart';
 import 'package:ai_assistant/presentation/providers/chat_notifier.dart';
 import 'package:ai_assistant/presentation/providers/chat_state.dart';
@@ -16,6 +17,7 @@ import 'package:ai_assistant/presentation/widgets/chat/composer.dart';
 import 'package:ai_assistant/presentation/widgets/chat/message_list.dart';
 import 'package:ai_assistant/presentation/widgets/chat/status_banners.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// The chat screen: app bar, conversation, notices, and composer.
@@ -104,6 +106,22 @@ class _ChatBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = context.l10n;
     final ChatState chat = ref.watch(chatNotifierProvider(conversationId));
+    ref.listen<ChatState>(chatNotifierProvider(conversationId), (
+      ChatState? previous,
+      ChatState next,
+    ) {
+      final String? text =
+          announcementFor(previous: previous, next: next, l10n: l10n);
+      if (text != null) {
+        unawaited(
+          SemanticsService.sendAnnouncement(
+            View.of(context),
+            text,
+            Directionality.of(context),
+          ),
+        );
+      }
+    });
     final bool configured = ref.watch(appConfigProvider).isConfigured;
     final bool anyStreaming =
         ref.watch(streamingBufferProvider.select((s) => s.isActive));

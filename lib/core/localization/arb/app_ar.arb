@@ -64,5 +64,11 @@
   "openLinkBody": "سيُفتح خارج التطبيق.",
   "open": "فتح",
   "cancel": "إلغاء",
-  "copyCode": "نسخ الشيفرة"
+  "copyCode": "نسخ الشيفرة",
+
+  "responseReady": "الرد جاهز",
+  "sourcesTitle": "المصادر",
+  "deleteChatTitle": "حذف هذه المحادثة؟",
+  "deleteChatBody": "ستُحذف رسائلها من هذا الجهاز.",
+  "delete": "حذف"
 }
