@@ -70,22 +70,28 @@ class InMemoryChatRepository implements ChatRepository {
     return null;
   }
 
+  final StreamController<void> _changes = StreamController<void>.broadcast();
+
+  List<Conversation> _sortedConversations() => conversations.values.toList()
+    ..sort((Conversation a, Conversation b) => b.updatedAt.compareTo(a.updatedAt));
+
   @override
-  Stream<List<Conversation>> watchConversations() {
-    final List<Conversation> sorted = conversations.values.toList()
-      ..sort((Conversation a, Conversation b) => b.updatedAt.compareTo(a.updatedAt));
-    return Stream<List<Conversation>>.value(sorted);
+  Stream<List<Conversation>> watchConversations() async* {
+    yield _sortedConversations();
+    yield* _changes.stream.map((_) => _sortedConversations());
   }
 
   @override
   Future<void> saveConversation(Conversation conversation) async {
     conversations[conversation.id] = conversation;
+    _changes.add(null);
   }
 
   @override
   Future<void> deleteConversation(String conversationId) async {
     conversations.remove(conversationId);
     messages.removeWhere((ChatMessage m) => m.conversationId == conversationId);
+    _changes.add(null);
   }
 
   @override
@@ -98,6 +104,7 @@ class InMemoryChatRepository implements ChatRepository {
       createdAt: existing.createdAt,
       updatedAt: existing.updatedAt,
     );
+    _changes.add(null);
   }
 
   @override

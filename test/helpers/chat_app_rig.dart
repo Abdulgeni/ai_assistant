@@ -93,6 +93,11 @@ class ChatAppRig {
     }
   }
 
+  Future<void> openDrawer(WidgetTester tester) async {
+    tester.state<ScaffoldState>(find.byType(Scaffold).first).openDrawer();
+    await settle(tester);
+  }
+
   Future<void> dispose(WidgetTester tester) async {
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 50));

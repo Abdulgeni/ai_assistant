@@ -16,6 +16,7 @@ import 'package:ai_assistant/presentation/providers/streaming_buffer.dart';
 import 'package:ai_assistant/presentation/widgets/chat/composer.dart';
 import 'package:ai_assistant/presentation/widgets/chat/message_list.dart';
 import 'package:ai_assistant/presentation/widgets/chat/status_banners.dart';
+import 'package:ai_assistant/presentation/widgets/conversations/conversations_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +31,7 @@ class ChatScreen extends ConsumerWidget {
     final AsyncValue<String> active = ref.watch(activeConversationProvider);
 
     return Scaffold(
+      drawer: const ConversationsDrawer(),
       appBar: AppBar(
         title: Text(
           l10n.appTitle,

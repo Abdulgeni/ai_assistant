@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ai_assistant/domain/chat_repository.dart';
 import 'package:ai_assistant/domain/entities/conversation.dart';
 import 'package:ai_assistant/presentation/providers/chat_notifier.dart';
@@ -64,6 +66,55 @@ class ActiveConversationController extends AsyncNotifier<String> {
     }
   }
 
+  /// Shows conversation [id].
+  void open(String id) {
+    if (state.valueOrNull != id) state = AsyncData<String>(id);
+  }
+
+  /// Deletes a conversation. Stops any reply still streaming in it, then
+  /// removes it from storage. Deleting is never blocked on the write queue
+  /// draining: a stuck write must not make a chat undeletable.
+  ///
+  /// If the deleted conversation was the open one, switches to the next most
+  /// recent (or a fresh one).
+  Future<void> deleteConversation(String id) async {
+    final ChatRepository repo = ref.read(chatRepositoryProvider);
+
+    // Cancel the in-flight reply first so no new tokens arrive while deleting.
+    //
+    // The wait on stop() is bounded: on Windows, canceling a stream
+    // subscription can take arbitrarily long, and a user's delete must not
+    // be blocked on the reply teardown. If stop() takes too long we proceed
+    // with the delete anyway; invalidating the notifier below runs its
+    // dispose path, which cancels the subscription without blocking.
+    if (ref.exists(chatNotifierProvider(id))) {
+      final ChatNotifier notifier = ref.read(chatNotifierProvider(id).notifier);
+      try {
+        await notifier.stop().timeout(const Duration(milliseconds: 500));
+      } on Object {
+        // A stuck cancel must not stop the delete.
+      }
+      // Best effort: do not block the user's delete on the write queue.
+      unawaited(notifier.flushWrites());
+    }
+
+    // Delete from storage. This is the operation the user asked for.
+    await repo.deleteConversation(id);
+
+    // Drop the notifier AFTER the delete so no late write can resurrect rows.
+    if (ref.exists(chatNotifierProvider(id))) {
+      ref.invalidate(chatNotifierProvider(id));
+    }
+
+    if (state.valueOrNull == id) {
+      final List<Conversation> remaining =
+          await repo.watchConversations().first;
+      state = AsyncData<String>(
+        remaining.isEmpty ? await _create(repo) : remaining.first.id,
+      );
+    }
+  }
+
   Future<String> _create(ChatRepository repo) async {
     final String id = ref.read(idGeneratorProvider)();
     final DateTime now = ref.read(clockProvider)();
@@ -73,6 +124,11 @@ class ActiveConversationController extends AsyncNotifier<String> {
     return id;
   }
 }
+
+/// All conversations, most recently updated first. Re-emits on any change.
+final conversationsProvider = StreamProvider<List<Conversation>>(
+  (ref) => ref.watch(chatRepositoryProvider).watchConversations(),
+);
 
 final activeConversationProvider =
     AsyncNotifierProvider<ActiveConversationController, String>(
