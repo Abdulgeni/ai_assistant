@@ -2,7 +2,7 @@ import 'package:ai_assistant/core/localization/l10n.dart';
 import 'package:ai_assistant/core/localization/locale_support.dart';
 import 'package:ai_assistant/core/theme/app_theme.dart';
 import 'package:ai_assistant/presentation/providers/app_settings_providers.dart';
-import 'package:ai_assistant/presentation/screens/home_screen.dart';
+import 'package:ai_assistant/presentation/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,7 +30,7 @@ class AppRoot extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       localeListResolutionCallback: resolveSupportedLocale,
-      home: const HomeScreen(),
+      home: const ChatScreen(),
     );
   }
 }

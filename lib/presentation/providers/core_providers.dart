@@ -1,7 +1,13 @@
+import 'package:ai_assistant/core/config/app_config.dart';
 import 'package:ai_assistant/domain/chat_repository.dart';
 import 'package:ai_assistant/domain/llm_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+
+/// Build-time configuration (`--dart-define`). Tests override it.
+final appConfigProvider = Provider<AppConfig>(
+  (ref) => AppConfig.fromEnvironment(),
+);
 
 /// Must be overridden in the root `ProviderScope` (the app bootstrap wires the
 /// Drift repository; tests supply fakes).

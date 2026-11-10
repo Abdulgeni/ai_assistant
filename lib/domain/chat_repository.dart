@@ -42,4 +42,8 @@ abstract interface class ChatRepository {
   /// Returns an empty list for a blank query. Ordering is best-effort
   /// relevance; callers must not rely on it.
   Future<List<ChatMessage>> searchMessages(String query, {int limit = 50});
+
+  /// Changes only the title. `updatedAt` is untouched, so a late rename can
+  /// never move a conversation in the list or undo a newer activity bump.
+  Future<void> renameConversation(String conversationId, String title);
 }

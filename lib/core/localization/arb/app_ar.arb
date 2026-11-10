@@ -48,5 +48,15 @@
   "allowAccess": "السماح بالوصول",
 
   "switchLanguage": "تغيير اللغة",
-  "switchTheme": "تغيير المظهر"
+  "switchTheme": "تغيير المظهر",
+
+  "messageFailed": "فشل هذا الرد",
+  "messageStopped": "تم الإيقاف",
+  "roleUser": "أنت",
+  "roleAssistant": "المساعد",
+  "otherChatBusy": "هناك محادثة أخرى قيد الرد حاليًا.",
+  "storageWarning": "تعذّر حفظ هذه المحادثة على جهازك.",
+  "notConfigured": "التطبيق غير متصل بالخادم بعد.",
+  "conversationLoadFailed": "تعذّر فتح محادثاتك.",
+  "historyLoadFailed": "تعذّر تحميل هذه المحادثة."
 }

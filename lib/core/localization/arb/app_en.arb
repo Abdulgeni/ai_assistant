@@ -56,5 +56,15 @@
   "allowAccess": "Allow access",
 
   "switchLanguage": "Switch language",
-  "switchTheme": "Switch theme"
+  "switchTheme": "Switch theme",
+
+  "messageFailed": "This response failed",
+  "messageStopped": "Stopped",
+  "roleUser": "You",
+  "roleAssistant": "Assistant",
+  "otherChatBusy": "Another chat is answering right now.",
+  "storageWarning": "This chat could not be saved on your device.",
+  "notConfigured": "The app is not connected to a server yet.",
+  "conversationLoadFailed": "Could not open your chats.",
+  "historyLoadFailed": "Could not load this chat."
 }

@@ -90,6 +90,15 @@ void main() {
       await sub.cancel();
     });
 
+    test('renameConversation changes only the title', () async {
+      final _Env env = await _open();
+      await env.repo.saveConversation(_conv('c1', updated: 50));
+      await env.repo.renameConversation('c1', 'New title');
+      final Conversation c = (await env.repo.watchConversations().first).single;
+      expect(c.title, 'New title');
+      expect(c.updatedAt, _at(50));
+    });
+
     test('deleting a conversation removes its messages only', () async {
       final _Env env = await _open();
       await env.repo.saveConversation(_conv('c1'));

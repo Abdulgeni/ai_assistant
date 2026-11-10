@@ -156,6 +156,13 @@ final class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
+  Future<void> renameConversation(String conversationId, String title) async {
+    await (_db.update(_db.conversations)
+          ..where((t) => t.id.equals(conversationId)))
+        .write(ConversationsCompanion(title: Value<String>(title)));
+  }
+
+  @override
   Future<int> recoverInterruptedStreams() {
     // Either signal counts, so a row whose flag and status disagree is fixed.
     return (_db.update(_db.chatMessages)

@@ -89,5 +89,10 @@ void testInQuietZone(
       },
     );
     if (future != null) await future;
+    // Settle any pending microtasks (Dio cancel tokens, controller
+    // close futures) so an unrelated running test cannot be flagged as
+    // failed by an earlier test's leftover async work in the shared
+    // flutter test isolate.
+    await Future<void>.delayed(const Duration(milliseconds: 20));
   }, timeout: timeout);
 }

@@ -152,3 +152,30 @@ abstract final class AppSkeleton {
   static const double lineGap = 8;
   static const double lastLineWidthFraction = 0.6;
 }
+
+/// Chat screen values.
+abstract final class AppChat {
+  /// Assistant bubbles may be wider than user bubbles (long answers, code).
+  static const double assistantBubbleMaxWidthFraction = 0.95;
+
+  /// Distance from the newest message (px) within which the list counts as
+  /// "following" new content.
+  static const double pinThreshold = 48;
+
+  /// Distance from the oldest loaded message (px) at which the next page of
+  /// history is requested.
+  static const double loadOlderThreshold = 400;
+
+  static const double entranceSlide = 12;
+  static const double caretWidth = 2;
+  static const double caretHeight = 18;
+  static const double thinkingDotSize = 6;
+  static const int composerMaxLines = 6;
+  static const double orbSize = 72;
+
+  /// Extra delay per item when the empty state reveals itself.
+  static const int revealStepMs = 60;
+
+  static const double skeletonUserWidthFraction = 0.5;
+  static const double skeletonAssistantWidthFraction = 0.8;
+}

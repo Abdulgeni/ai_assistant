@@ -71,8 +71,11 @@ class InMemoryChatRepository implements ChatRepository {
   }
 
   @override
-  Stream<List<Conversation>> watchConversations() =>
-      Stream<List<Conversation>>.value(conversations.values.toList());
+  Stream<List<Conversation>> watchConversations() {
+    final List<Conversation> sorted = conversations.values.toList()
+      ..sort((Conversation a, Conversation b) => b.updatedAt.compareTo(a.updatedAt));
+    return Stream<List<Conversation>>.value(sorted);
+  }
 
   @override
   Future<void> saveConversation(Conversation conversation) async {
@@ -83,6 +86,18 @@ class InMemoryChatRepository implements ChatRepository {
   Future<void> deleteConversation(String conversationId) async {
     conversations.remove(conversationId);
     messages.removeWhere((ChatMessage m) => m.conversationId == conversationId);
+  }
+
+  @override
+  Future<void> renameConversation(String conversationId, String title) async {
+    final Conversation? existing = conversations[conversationId];
+    if (existing == null) return;
+    conversations[conversationId] = Conversation(
+      id: existing.id,
+      title: title,
+      createdAt: existing.createdAt,
+      updatedAt: existing.updatedAt,
+    );
   }
 
   @override
