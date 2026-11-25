@@ -22,4 +22,12 @@ class FakePlatformActions implements PlatformActions {
     opened.add(uri);
     return true;
   }
+
+  int settingsOpened = 0;
+
+  @override
+  Future<bool> openAppSettings() async {
+    settingsOpened++;
+    return true;
+  }
 }

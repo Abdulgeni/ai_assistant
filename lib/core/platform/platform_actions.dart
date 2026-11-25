@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart' as permissions;
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,6 +14,10 @@ abstract interface class PlatformActions {
   /// Opens [uri] in the system browser or another app. Returns false if it
   /// could not be opened. Callers must have confirmed with the user.
   Future<bool> openUrl(Uri uri);
+
+  /// Opens this app's page in the system settings (for a permanently denied
+  /// microphone permission). Returns false if it could not be opened.
+  Future<bool> openAppSettings();
 }
 
 final class DefaultPlatformActions implements PlatformActions {
@@ -32,6 +37,9 @@ final class DefaultPlatformActions implements PlatformActions {
   @override
   Future<bool> openUrl(Uri uri) =>
       launchUrl(uri, mode: LaunchMode.externalApplication);
+
+  @override
+  Future<bool> openAppSettings() => permissions.openAppSettings();
 }
 
 /// The URI for [href] if it is safe to offer to open, else null.
