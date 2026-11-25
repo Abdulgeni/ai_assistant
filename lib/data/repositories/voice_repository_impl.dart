@@ -115,6 +115,9 @@ final class PlatformVoiceEngine implements VoiceEngine {
   @override
   Stream<double> get audioLevel => _levels.stream;
 
+  @override
+  bool get isSpeaking => _speaking || _queue.isNotEmpty || _runOpen;
+
   // ----------------------------------------------------------- permissions
 
   @override
@@ -559,23 +562,25 @@ final class PlatformVoiceEngine implements VoiceEngine {
 
   void _onInterruption(bool began) {
     if (_disposed || _sessionState is! VoiceSessionActive) return;
-    if (began) {
-      _cancelListenState(emit: true);
-      _dropPlaybackState();
-      unawaited(_safe(_recognizer.cancel));
-      unawaited(_safe(_synthesizer.stop));
-      _emit(const AudioInterruption(began: true));
-    } else {
-      _emit(const AudioInterruption(began: false));
-      // Take the audio session back, and re-assert our configuration in case
-      // another plugin changed it while we were interrupted.
-      unawaited(
-        _safe(() async {
+    // Serialize the platform stops through the command queue so their
+    // physical effects land in order with any other queued command.
+    // Fire-and-forget leaves the mic and synth physically active briefly
+    // after the engine has already reported them stopped.
+    unawaited(_enqueue<void>(() async {
+      if (began) {
+        _cancelListenState(emit: true);
+        _dropPlaybackState();
+        await _safe(_recognizer.cancel);
+        await _safe(_synthesizer.stop);
+        _emit(const AudioInterruption(began: true));
+      } else {
+        _emit(const AudioInterruption(began: false));
+        await _safe(() async {
           await _audio.configureForVoice();
           await _audio.setActive(active: true);
-        }),
-      );
-    }
+        });
+      }
+    }));
   }
 
   void _onBecomingNoisy() {

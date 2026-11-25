@@ -172,4 +172,8 @@ abstract interface class VoiceEngine {
   Future<void> stopSpeaking();
 
   Future<void> dispose();
+  /// True from the moment a speak command is committed until its run ends with
+  /// a PlaybackFinished or PlaybackCancelled. A controller that has just been
+  /// told a run finished must check this: a newer run may already be playing.
+  bool get isSpeaking;
 }

@@ -148,8 +148,16 @@ class FakeSynthesizer implements SpeechSynthesizerPort {
     _onComplete?.call();
   }
 
-  void spuriousComplete() => _onComplete?.call();
+  /// A stale completion callback. Physically, the callback firing means the
+  /// chunk finished, so the fake marks itself inactive.
+  void spuriousComplete() {
+    active = false;
+    _onComplete?.call();
+  }
 
+  /// A stale cancel callback with no physical change. Represents the platform
+  /// echoing our own earlier stop() after we have already started the next
+  /// utterance. The engine must ignore it. `active` is NOT touched.
   void spuriousCancel() => _onCancel?.call();
 
   void osCancel() {
